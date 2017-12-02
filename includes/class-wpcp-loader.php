@@ -64,7 +64,6 @@ class WPCP_Loader {
 		$this->actions = array();
 		$this->filters = array();
 		$this->shortcodes = array();
-
 	}
 
 
@@ -110,10 +109,10 @@ class WPCP_Loader {
      * Add a new shortcode to the collection to be registered with WordPress
      *
      * @since     1.0.0
-     * @param     string        	$tag           		The name of the new shortcode.
-     * @param     object        	$component      	A reference to the instance of the object on which the
+     * @param     string        		$tag           	The name of the new shortcode.
+     * @param     object        		$component      A reference to the instance of the object on which the
      *                                           		shortcode is defined.
-     * @param     string        	$callback       	The name of the function that defines the shortcode.
+     * @param     string        		$callback       The name of the function that defines the shortcode.
      * @see https://github.com/DevinVinson/WordPress-Plugin-Boilerplate/issues/262#issuecomment-89438555
      */
     public function add_shortcode( $tag, $component, $callback, $priority = 10, $accepted_args = 5) {
@@ -128,15 +127,15 @@ class WPCP_Loader {
 	 *
 	 * @since    1.0.0
 	 * @access   private
-	 * @param    array                $hooks            The collection of hooks that is being registered (that
+	 * @param    array                	$hooks          The collection of hooks that is being registered (that
 	 *                                                  is, actions or filters).
-	 * @param    string               $hook             The name of the WordPress filter that is being
+	 * @param    string               	$hook           The name of the WordPress filter that is being
 	 *                                                  registered.
-	 * @param    object               $component        A reference to the instance of the object on which the
+	 * @param    object               	$component      A reference to the instance of the object on which the
 	 *                                                  filter is defined.
-	 * @param    string               $callback         The name of the function definition on the $component.
-	 * @param    int                  $priority         The priority at which the function should be fired.
-	 * @param    int                  $accepted_args    The number of arguments that should be passed to the
+	 * @param    string               	$callback       The name of the function definition on the $component.
+	 * @param    int                  	$priority       The priority at which the function should be fired.
+	 * @param    int                  	$accepted_args  The number of arguments that should be passed to the
 	 *                                                  $callback.
 	 * @return   array                                  The collection of actions and filters registered with
 	 *                                                  WordPress.
