@@ -55,7 +55,7 @@ class WPCP_Public {
 	}
 
 
-	/**
+	/**class="Jazz">🎷
 	 * create post
 	 *
 	 */
@@ -71,9 +71,20 @@ class WPCP_Public {
 
         // Create post object
         $your_post = array(
-        	'post_title'    => $posted_data[your_title],
+        	// Event title
+        	'post_title'    => $posted_data[event_title],
+
     	  	'post_content'  => $posted_data[your_content],
     	  	'post_status'   => 'draft',
+    	  	'meta_input'	=> array(
+    	  		'status'			=> $posted_data[your_status],
+    	  		'name'				=> $posted_data[your_name],
+    	  		'first_name'		=> $posted_data[your_first_name],
+
+    	  		// Event
+    	  		'event_children'	=> $posted_data[event_children],
+    	  		'event_price' 		=> $posted_data[event_price],
+    	  	),
         );
 
         return wp_insert_post( $your_post );

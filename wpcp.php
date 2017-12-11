@@ -37,6 +37,7 @@ if ( ! defined( 'WPINC' ) ) {
  */
 require plugin_dir_path( __FILE__ ) . 'includes/class-wpcp.php';
 
+
 /**
  * Begins execution of the plugin.
  *
