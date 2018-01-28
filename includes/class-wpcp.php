@@ -156,7 +156,10 @@ class WPCP {
      * @access   private
      */
     private function define_public_hooks() {
-        $plugin_public = new WPCP_Public( $this->get_plugin_name(), $this->get_version() );
+        $plugin_public = new WPCP_Public(
+        	$this->get_plugin_name(),
+        	$this->get_version()
+        );
 
         $this->loader->add_action( 'wpcf7_before_send_mail', $plugin_public, 'create_post', 100 );
     }
