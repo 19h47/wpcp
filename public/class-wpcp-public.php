@@ -291,8 +291,6 @@ class WPCP_Public {
    	   	}
    	   	update_field( 'field_5a6c8cd3e6712', $sundays_value, $post_id );
 
-   	   	// var_dump($saturdays, $sundays);
-
    	   	// event_prices
 		if ( $posted_data[event_prices] ) {
 			update_field( 'field_5a6c8d41e6717', $posted_data[event_prices], $post_id );
@@ -318,7 +316,6 @@ class WPCP_Public {
 		////////////////////
 
 		// image
-
 		require_once( ABSPATH . 'wp-admin/includes/image.php' );
         require_once( ABSPATH . 'wp-admin/includes/file.php' );
         require_once( ABSPATH . 'wp-admin/includes/media.php' );
@@ -332,10 +329,23 @@ class WPCP_Public {
             	array_push( $attachments, $attachment_id );
             }
         }
-
 		update_field( 'field_5a6dd43daa1dc', $attachments, $post_id );
 
-		// Partners
+
+		// partners
+	   	$partners = explode( ',', $posted_data[partners_repeater] );
+	   	$partners = array_splice( $partners , 1, count( $partners ) );
+	   	$partners_attachment_id = [];
+
+	   	for ( $i = 0; $i <= count( $partners ); $i++ ) {
+	   		$partner_attachment_id = media_handle_upload( $partners[$i], 0 );
+
+	   		if ( $partner_attachment_id ) {
+	   			array_push( $partners_attachment_id, $partner_attachment_id );
+	   		}
+	   	}
+	   	update_field( 'field_5a6dcdd1766c1', $partners_attachment_id, $post_id );
+
 
 		// youtube
 		if ( $posted_data[youtube] ) {
