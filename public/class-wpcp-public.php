@@ -60,6 +60,7 @@ class WPCP_Public {
 	 *
 	 */
 	public function create_post( $contact_form ) {
+
 		$submission = WPCF7_Submission::get_instance();
 
 		if ( ! $submission ) {
@@ -104,7 +105,7 @@ class WPCP_Public {
         $post_id = wp_insert_post( $your_post );
 
         if ( ! $post_id ) {
-        	return;
+        	return false;
         }
 
         // WPGM
@@ -312,12 +313,27 @@ class WPCP_Public {
 			update_field( 'field_5a633a9d94992', $posted_data[event_description], $post_id );
 		}
 
-
 		////////////////////
 		// Ajout de média //
 		////////////////////
 
 		// image
+
+		require_once( ABSPATH . 'wp-admin/includes/image.php' );
+        require_once( ABSPATH . 'wp-admin/includes/file.php' );
+        require_once( ABSPATH . 'wp-admin/includes/media.php' );
+
+        $attachments = array( 'event-image-1', 'event-image-2', 'event-image-3' );
+
+        foreach( $attachments as $attachment ) {
+            $attachment_id = media_handle_upload( $attachment, 0 );
+
+            if ( $attachment_id ) {
+            	array_push( $attachments, $attachment_id );
+            }
+        }
+
+		update_field( 'field_5a6dd43daa1dc', $attachments, $post_id );
 
 		// Partners
 
@@ -325,23 +341,6 @@ class WPCP_Public {
 		if ( $posted_data[youtube] ) {
 			update_field( 'field_5a6dcd81a44b5', $posted_data[youtube], $post_id );
 		}
-
-		if ( $posted_data[image_1] ) {
-
-			if ( ! function_exists( 'media_handle_upload' ) ) {
-			    require_once( ABSPATH . 'wp-admin/includes/image.php' );
-				require_once( ABSPATH . 'wp-admin/includes/file.php' );
-				require_once( ABSPATH . 'wp-admin/includes/media.php' );
-			}
-
-			$attachment_id = media_handle_upload( 'image_1', 0 );
-
-			update_field( 'field_5a6dd43daa1dc', $attachment_id, $post_id );
-
-		}
-
-    	wp_die( var_dump( $_FILES ), var_dump( $posted_data ),var_dump( $attachment_id ) );
-
 
         return $posted_data;
 	}
