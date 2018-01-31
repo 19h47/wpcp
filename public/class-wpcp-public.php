@@ -299,6 +299,7 @@ class WPCP_Public {
 		// event_places_number
 		if ( $posted_data[event_places_number] ) {
 			update_field( 'field_5a6c8d12e6716', $posted_data[event_places_number], $post_id );
+			update_field( 'field_5a70ec191d80f', $posted_data[event_places_number], $post_id );
 		}
 
 		// event_minimum_ages
@@ -315,21 +316,24 @@ class WPCP_Public {
 		// Ajout de média //
 		////////////////////
 
-		// image
 		require_once( ABSPATH . 'wp-admin/includes/image.php' );
         require_once( ABSPATH . 'wp-admin/includes/file.php' );
         require_once( ABSPATH . 'wp-admin/includes/media.php' );
 
-        $attachments = array( 'event-image-1', 'event-image-2', 'event-image-3' );
+		// image
+        $event_attachments = array( 'event-image-1', 'event-image-2', 'event-image-3' );
+        $event_attachments_id = [];
 
-        foreach( $attachments as $attachment ) {
-            $attachment_id = media_handle_upload( $attachment, 0 );
+    	var_dump($_FILES);
+        foreach( $event_attachments as $event_attachment ) {
+            $event_attachment_id = media_handle_upload( $event_attachment, 0 );
+        	// var_dump( $event_attachment_id );
 
-            if ( $attachment_id ) {
-            	array_push( $attachments, $attachment_id );
+            if ( $event_attachment_id ) {
+            	array_push( $event_attachments_id, $event_attachment_id );
             }
         }
-		update_field( 'field_5a6dd43daa1dc', $attachments, $post_id );
+		update_field( 'field_5a6dd43daa1dc', $event_attachments_id, $post_id );
 
 
 		// partners
@@ -351,6 +355,8 @@ class WPCP_Public {
 		if ( $posted_data[youtube] ) {
 			update_field( 'field_5a6dcd81a44b5', $posted_data[youtube], $post_id );
 		}
+
+		wp_die(var_dump($event_attachments_id));
 
         return $posted_data;
 	}
