@@ -68,230 +68,245 @@ class WPCP_Public {
 		}
 
 		if ( $contact_form->id() !== 334 ) {
-		    return $components;
+			return $components;
 		}
 
-        // Get data from $submission object
-        $posted_data = $submission->get_posted_data();
+		// Get data from $submission object
+		$posted_data = $submission->get_posted_data();
 
-        // var_dump($posted_data);
+		// var_dump($posted_data);
 
-        // Create post object
-        $your_post = array(
-        	// Event title
-        	'post_type'		=> 'event',
-        	'post_status'	=> 'draft',
+		// Create post object
+		$your_post = array(
+			// Event title
+			'post_type'     => 'event',
+			'post_status'   => 'draft',
 
-        	'post_title'    => $posted_data[event_title],
-    	  	'post_status'   => 'draft',
-        );
+			'post_title'    => $posted_data[event_title],
+			'post_status'   => 'draft',
+		);
 
-        $cities = get_terms(
-        	array(
-		    	'taxonomy' 		=> 'city',
-		    	'hide_empty' 	=> false,
+		$cities = get_terms(
+			array(
+				'taxonomy'      => 'city',
+				'hide_empty'    => false,
 			)
-        );
+		);
 
-        foreach ( $cities as $city ) {
-        	if ( $city->name === $posted_data[place_participating_city] ) {
-        		$your_post['post_author'] = get_field( 'user', 'city_' . $city->term_id )['ID'];
+		foreach ( $cities as $city ) {
+			if ( $city->name === $posted_data[place_participating_city] ) {
+				$your_post['post_author'] = get_field( 'user', 'city_' . $city->term_id )['ID'];
 
-        		break;
-        	}
-        }
-
-
-        $post_id = wp_insert_post( $your_post );
-
-        if ( ! $post_id ) {
-        	return false;
-        }
-
-        // WPGM
-        $address = [];
-
-        if ( $posted_data[place_address] ) {
-    		array_push( $address, $posted_data[place_address] );
-        }
-
-        if ( $posted_data[place_city] ) {
-    		array_push( $address, $posted_data[place_city] );
-        }
-
-        if ( $posted_data[place_address_supplement] ) {
-    		array_push( $address, $posted_data[place_address_supplement] );
-        }
-
-        if ( $posted_data[place_postal_code] ) {
-    		array_push( $address, $posted_data[place_postal_code] );
-        }
-
-        update_post_meta( $post_id, '_wpgm_details', array( 'address' => join( ', ', $address ) ) );
-
-        // wp_die( var_dump( get_post_meta( $post_id ) ) );
+				break;
+			}
+		}
 
 
-        /////////////////////
-        // Qui êtes-vous ? //
-        /////////////////////
+		$post_id = wp_insert_post( $your_post );
 
-        // Particular
-        if ( $posted_data[particular] ) {
-        	update_field( 'field_5a6a583c34e75', $posted_data[particular], $post_id );
-        }
+		if ( ! $post_id ) {
+			return false;
+		}
 
-        // Association name
-        if ( $posted_data[association_name] ) {
-        	 update_field( 'field_5a6a574df7240', $posted_data[association_name], $post_id );
-        }
+		// WPGM
+		$address = [];
 
-        // Association email
-        if ( $posted_data[association_email] ) {
-        	update_field( 'field_5a6a566a52e71', $posted_data[association_email], $post_id );
-        }
+		if ( $posted_data[place_address] ) {
+			array_push( $address, $posted_data[place_address] );
+		}
 
-        // Association phone
-        if ( $posted_data[association_phone] ) {
-        	 update_field( 'field_5a6a5738f723f', $posted_data[association_phone], $post_id );
-        }
+		if ( $posted_data[place_city] ) {
+			array_push( $address, $posted_data[place_city] );
+		}
 
+		if ( $posted_data[place_address_supplement] ) {
+			array_push( $address, $posted_data[place_address_supplement] );
+		}
 
-        /////////////////////////////
-        // Informations de contact //
-        /////////////////////////////
+		if ( $posted_data[place_postal_code] ) {
+			array_push( $address, $posted_data[place_postal_code] );
+		}
 
-        // your_civility
-        if ( $posted_data[your_civility] ) {
-        	update_field( 'field_5a6ba39fd700e', $posted_data[your_civility], $post_id );
-        }
+		update_post_meta( $post_id, '_wpgm_details', array( 'address' => join( ', ', $address ) ) );
 
-        // your_name
-        if ( $posted_data[your_name] ) {
-        	update_field( 'field_5a6ba492f464a', $posted_data[your_name], $post_id );
-        }
-
-        // your_first_name
-        if ( $posted_data[your_first_name] ) {
-        	update_field( 'field_5a6ba488f4649', $posted_data[your_first_name], $post_id );
-        }
-
-        // your_email
-        if ( $posted_data[your_email] ) {
-        	update_field( 'field_5a6ba50af464b', $posted_data[your_email], $post_id );
-        }
-
-        // your_phone
-        if ( $posted_data[your_phone] ) {
-        	update_field( 'field_5a6ba538f464c', $posted_data[your_phone], $post_id );
-        }
+		// wp_die( var_dump( get_post_meta( $post_id ) ) );
 
 
-        /////////////////////////
-        // Lieu de l'évènement //
-        /////////////////////////
+		/////////////////////
+		// Qui êtes-vous ? //
+		/////////////////////
 
-        // place_type
-        if ( $posted_data[place_type] ) {
-        	update_field( 'field_5a6b9efc1ca76', $posted_data[place_type], $post_id );
-        }
+		// Particular
+		if ( $posted_data[particular] ) {
+			update_field( 'field_5a6a583c34e75', $posted_data[particular], $post_id );
+		}
 
-        // place_name
-        if ( $posted_data[place_name] ) {
-        	update_field( 'field_5a5fc10ae7b4d', $posted_data[place_name], $post_id );
-        }
+		// Association name
+		if ( $posted_data[association_name] ) {
+			 update_field( 'field_5a6a574df7240', $posted_data[association_name], $post_id );
+		}
 
-        // place_participating_city
-        if ( $posted_data[place_participating_city] ) {
-        	wp_set_object_terms(
-        		$post_id,
-        		$posted_data[place_participating_city],
-        		'city',
-        		false
-        	);
-        }
+		// Association email
+		if ( $posted_data[association_email] ) {
+			update_field( 'field_5a6a566a52e71', $posted_data[association_email], $post_id );
+		}
 
-        // place_address
-        if ( $posted_data[place_address] ) {
-        	update_field( 'field_5a6ba027c718b', $posted_data[place_address], $post_id );
-        }
+		// Association phone
+		if ( $posted_data[association_phone] ) {
+			 update_field( 'field_5a6a5738f723f', $posted_data[association_phone], $post_id );
+		}
 
-        // place_city
-        if ( $posted_data[place_city] ) {
-        	update_field( 'field_5a6ba049c718c', $posted_data[place_city], $post_id );
-        }
+		// Place name
+		if ( $posted_data[place_name] ) {
+			update_field( 'field_5a75ed0e3532a', $posted_data[place_name], $post_id );
+		}
 
-        // place_address_supplement
-        if ( $posted_data[place_address_supplement] ) {
-        	update_field( 'field_5a6ba072c718d', $posted_data[place_address_supplement], $post_id );
-        }
+		// Place email
+		if ( $posted_data[place_email] ) {
+			update_field( 'field_5a75ed9c3532b', $posted_data[place_email], $post_id );
+		}
 
-        // place_postal_code
-        if ( $posted_data[place_postal_code] ) {
-        	update_field( 'field_5a6ba0a3c718e', $posted_data[place_postal_code], $post_id );
-        }
+		// Place phone
+		if ( $posted_data[place_phone] ) {
+			update_field( 'field_5a75edbe3532c', $posted_data[place_phone], $post_id );
+		}
 
 
-        ////////////////////////////////
-        // Paramétrage de l’événement //
-        ////////////////////////////////
+		/////////////////////////////
+		// Informations de contact //
+		/////////////////////////////
 
-       	// event_category
-       	if ( $posted_data[event_category] ) {
-       		wp_set_object_terms(
-       			$post_id,
-       			$posted_data[event_category],
-       			'event_category',
-       			false
-       		);
-       	}
+		// your_civility
+		if ( $posted_data[your_civility] ) {
+			update_field( 'field_5a6ba39fd700e', $posted_data[your_civility], $post_id );
+		}
 
-       	// Saturday
-       	$saturdays = explode( ',', $posted_data[saturday_repeater] );
-       	$saturdays = array_splice( $saturdays , 1, count( $saturdays ) );
-       	$saturdays_value = [];
+		// your_name
+		if ( $posted_data[your_name] ) {
+			update_field( 'field_5a6ba492f464a', $posted_data[your_name], $post_id );
+		}
 
-       	for ( $i = 0; $i <= ( count( $saturdays ) / 3 ) - 1; $i++ ) {
-    		$index = "-{$i}";
+		// your_first_name
+		if ( $posted_data[your_first_name] ) {
+			update_field( 'field_5a6ba488f4649', $posted_data[your_first_name], $post_id );
+		}
 
-       		if ( $index === '-0' ) {
-       			$index = '';
-       		}
+		// your_email
+		if ( $posted_data[your_email] ) {
+			update_field( 'field_5a6ba50af464b', $posted_data[your_email], $post_id );
+		}
 
-       		$saturday_value = array(
-       			'hour'		=> $posted_data['event_date_saturday_hour' . $index],
-       			'duration'	=> $posted_data['event_date_saturday_duration' . $index],
-       			'end'		=> $posted_data['event_date_saturday_end' . $index],
-       		);
-
-       		array_push( $saturdays_value, $saturday_value );
-       	}
-       	update_field( 'field_5a6c8c24e73e4', $saturdays_value, $post_id );
+		// your_phone
+		if ( $posted_data[your_phone] ) {
+			update_field( 'field_5a6ba538f464c', $posted_data[your_phone], $post_id );
+		}
 
 
-       	// Sunday
-   	   	$sundays = explode( ',', $posted_data[sunday_repeater] );
-   	   	$sundays = array_splice( $sundays , 1, count( $sundays ) );
-   	   	$sundays_value = [];
+		/////////////////////////
+		// Lieu de l'évènement //
+		/////////////////////////
 
-   	   	for ( $i = 0; $i <= ( count( $sundays ) / 3 ) - 1; $i++ ) {
-   			$index = "-{$i}";
+		// place_type
+		if ( $posted_data[place_type] ) {
+			update_field( 'field_5a6b9efc1ca76', $posted_data[place_type], $post_id );
+		}
 
-   	   		if ( $index === '-0' ) {
-   	   			$index = '';
-   	   		}
+		// place_public_name
+		if ( $posted_data[place_public_name] ) {
+			update_field( 'field_5a5fc10ae7b4d', $posted_data[place_public_name], $post_id );
+		}
 
-   	   		$sunday_value = array(
-   	   			'hour'		=> $posted_data['event_date_sunday_hour' . $index],
-   	   			'duration'	=> $posted_data['event_date_sunday_duration' . $index],
-   	   			'end'		=> $posted_data['event_date_sunday_end' . $index],
-   	   		);
+		// place_participating_city
+		if ( $posted_data[place_participating_city] ) {
+			wp_set_object_terms(
+				$post_id,
+				$posted_data[place_participating_city],
+				'city',
+				false
+			);
+		}
 
-   	   		array_push( $sundays_value, $sunday_value );
-   	   	}
-   	   	update_field( 'field_5a6c8cd3e6712', $sundays_value, $post_id );
+		// place_address
+		if ( $posted_data[place_address] ) {
+			update_field( 'field_5a6ba027c718b', $posted_data[place_address], $post_id );
+		}
 
-   	   	// event_prices
+		// place_city
+		if ( $posted_data[place_city] ) {
+			update_field( 'field_5a6ba049c718c', $posted_data[place_city], $post_id );
+		}
+
+		// place_address_supplement
+		if ( $posted_data[place_address_supplement] ) {
+			update_field( 'field_5a6ba072c718d', $posted_data[place_address_supplement], $post_id );
+		}
+
+		// place_postal_code
+		if ( $posted_data[place_postal_code] ) {
+			update_field( 'field_5a6ba0a3c718e', $posted_data[place_postal_code], $post_id );
+		}
+
+
+		////////////////////////////////
+		// Paramétrage de l’événement //
+		////////////////////////////////
+
+		// event_category
+		if ( $posted_data[event_category] ) {
+			wp_set_object_terms(
+				$post_id,
+				$posted_data[event_category],
+				'event_category',
+				false
+			);
+		}
+
+		// Saturday
+		$saturdays = explode( ',', $posted_data[saturday_repeater] );
+		$saturdays = array_splice( $saturdays , 1, count( $saturdays ) );
+		$saturdays_value = [];
+
+		for ( $i = 0; $i <= ( count( $saturdays ) / 3 ) - 1; $i++ ) {
+			$index = "-{$i}";
+
+			if ( $index === '-0' ) {
+				$index = '';
+			}
+
+			$saturday_value = array(
+				'hour'      => $posted_data['event_date_saturday_hour' . $index],
+				'duration'  => $posted_data['event_date_saturday_duration' . $index],
+				'end'       => $posted_data['event_date_saturday_end' . $index],
+			);
+
+			array_push( $saturdays_value, $saturday_value );
+		}
+		update_field( 'field_5a6c8c24e73e4', $saturdays_value, $post_id );
+
+
+		// Sunday
+		$sundays = explode( ',', $posted_data[sunday_repeater] );
+		$sundays = array_splice( $sundays , 1, count( $sundays ) );
+		$sundays_value = [];
+
+		for ( $i = 0; $i <= ( count( $sundays ) / 3 ) - 1; $i++ ) {
+			$index = "-{$i}";
+
+			if ( $index === '-0' ) {
+				$index = '';
+			}
+
+			$sunday_value = array(
+				'hour'      => $posted_data['event_date_sunday_hour' . $index],
+				'duration'  => $posted_data['event_date_sunday_duration' . $index],
+				'end'       => $posted_data['event_date_sunday_end' . $index],
+			);
+
+			array_push( $sundays_value, $sunday_value );
+		}
+		update_field( 'field_5a6c8cd3e6712', $sundays_value, $post_id );
+
+		// event_prices
 		if ( $posted_data[event_prices] ) {
 			update_field( 'field_5a6c8d41e6717', $posted_data[event_prices], $post_id );
 		}
@@ -317,38 +332,38 @@ class WPCP_Public {
 		////////////////////
 
 		require_once( ABSPATH . 'wp-admin/includes/image.php' );
-        require_once( ABSPATH . 'wp-admin/includes/file.php' );
-        require_once( ABSPATH . 'wp-admin/includes/media.php' );
+		require_once( ABSPATH . 'wp-admin/includes/file.php' );
+		require_once( ABSPATH . 'wp-admin/includes/media.php' );
+
 
 		// image
-        $event_attachments = array( 'event-image-1', 'event-image-2', 'event-image-3' );
-        $event_attachments_id = [];
+		$event_attachments = ['event_image_1', 'event_image_2', 'event_image_3'];
+		$event_attachments_id = [];
 
-    	var_dump($_FILES);
-        foreach( $event_attachments as $event_attachment ) {
-            $event_attachment_id = media_handle_upload( $event_attachment, 0 );
-        	// var_dump( $event_attachment_id );
+		for ( $i = 0; $i <= count( $event_attachments ); $i++ ) {
 
-            if ( $event_attachment_id ) {
-            	array_push( $event_attachments_id, $event_attachment_id );
-            }
-        }
+			$event_attachment_id = media_handle_upload( (string) $event_attachments[$i], 0 );
+
+			if ( $event_attachment_id ) {
+				array_push( $event_attachments_id, $event_attachment_id );
+			}
+		}
 		update_field( 'field_5a6dd43daa1dc', $event_attachments_id, $post_id );
 
 
 		// partners
-	   	$partners = explode( ',', $posted_data[partners_repeater] );
-	   	$partners = array_splice( $partners , 1, count( $partners ) );
-	   	$partners_attachment_id = [];
+		$partners = explode( ',', $posted_data[partners_repeater] );
+		$partners = array_splice( $partners , 1, count( $partners ) );
+		$partners_attachment_id = [];
 
-	   	for ( $i = 0; $i <= count( $partners ); $i++ ) {
-	   		$partner_attachment_id = media_handle_upload( $partners[$i], 0 );
+		for ( $i = 0; $i <= count( $partners ); $i++ ) {
+			$partner_attachment_id = media_handle_upload( $partners[$i], 0 );
 
-	   		if ( $partner_attachment_id ) {
-	   			array_push( $partners_attachment_id, $partner_attachment_id );
-	   		}
-	   	}
-	   	update_field( 'field_5a6dcdd1766c1', $partners_attachment_id, $post_id );
+			if ( $partner_attachment_id ) {
+				array_push( $partners_attachment_id, $partner_attachment_id );
+			}
+		}
+		update_field( 'field_5a6dcdd1766c1', $partners_attachment_id, $post_id );
 
 
 		// youtube
@@ -356,8 +371,8 @@ class WPCP_Public {
 			update_field( 'field_5a6dcd81a44b5', $posted_data[youtube], $post_id );
 		}
 
-		wp_die(var_dump($event_attachments_id));
+		// wp_die();
 
-        return $posted_data;
+		return $posted_data;
 	}
 }
