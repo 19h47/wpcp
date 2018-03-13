@@ -13,7 +13,7 @@
  * @package  			WPCP
  *
  * @wordpress-plugin
- * Plugin Name:       Create Post
+ * Plugin Name:       Create
  * Plugin URI:        http://www.19h47.fr
  * Description:       This plugin allows post creation from a CF7 form submission.
  * Version:           1.0.0
@@ -32,10 +32,30 @@ if ( ! defined( 'WPINC' ) ) {
 
 
 /**
+ * The code that runs during plugin activation.
+ * This action is documented in includes/class-status-activator.php
+ */
+function activate_status() {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-create-activator.php';
+	Create_Activator::activate();
+}
+
+
+/**
+ * The code that runs during plugin deactivation.
+ * This action is documented in includes/class-status-deactivator.php
+ */
+function deactivate_status() {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-create-deactivator.php';
+	Create_Deactivator::deactivate();
+}
+
+
+/**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path( __FILE__ ) . 'includes/class-wpcp.php';
+require plugin_dir_path( __FILE__ ) . 'includes/class-create.php';
 
 
 /**

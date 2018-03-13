@@ -97,7 +97,7 @@ class WPCP {
          * The class responsible for orchestrating the actions and filters of
          * the core plugin.
          */
-        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wpcp-loader.php';
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-create-loader.php';
 
 
         /**
@@ -105,12 +105,6 @@ class WPCP {
          * admin area.
          */
         require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-wpcp-admin.php';
-
-
-        /**
-         * The class responsible for defining all actions relating to metaboxes.
-         */
-        // require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-wpgm-admin-metaboxes.php';
 
 
         /**
@@ -133,19 +127,7 @@ class WPCP {
      */
     private function define_admin_hooks() {
         $plugin_admin = new WPCP_Admin( $this->get_plugin_name(), $this->get_version() );
-
-        //make sure our dependent plugins exists.
-        $this->loader->add_action( 'admin_init', $plugin_admin, 'check_plugin_dependency' );
     }
-
-
-    /*
-     * Include_before_theme
-     *
-     * This function will include core files before the theme's functions.php
-     * file has been excecuted.
-     */
-    // function include_before_theme() {}
 
 
     /**
@@ -163,24 +145,6 @@ class WPCP {
 
         $this->loader->add_action( 'wpcf7_before_send_mail', $plugin_public, 'create_post', 100 );
     }
-
-
-    /**
-     * Register all of the hooks related to metaboxes
-     *
-     * @since       1.0.0
-     * @access      private
-     */
-    // private function define_metabox_hooks() {}
-
-
-    /**
-     * Register scripts
-     *
-     * @access public
-     * @author Jérémy Levron levronjeremy@19h47.fr
-     */
-    // public function register_scripts() {}
 
 
     /**

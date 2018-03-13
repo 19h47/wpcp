@@ -53,6 +53,8 @@ class WPCP_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
+
+		$this->check_plugin_dependency();
 	}
 
 
@@ -63,38 +65,34 @@ class WPCP_Admin {
 	 *
 	 * @since 1.1.0
 	 */
-	public function check_plugin_dependency() {
-
-		if( is_plugin_active( 'contact-form-7/wp-contact-form-7.php' ) ) {
-			add_action( 'admin_notices', array( $this, 'admin_notice__success' ) );
-
-			return true;
-		}
-
-		return add_action( 'admin_notices', array( $this, 'admin_notice__error' ) );
-	}
+	public function check_plugin_dependency() {}
 
 
 	/**
-	 * admin notice success
+	 * Admin notice success
+	 *
+	 * @since  1.0.0
+	 * @access public
 	 */
 	public function admin_notice__success() {
 
-		$class = 'notice notice-success is-dismissible';
-		$message = __( '<strong>WordPress Create Post</strong> has been installed with success' );
+	    $class = 'notice notice-success is-dismissible';
+	    $message = __( '<strong>Create</strong> has been installed with success' );
 
-		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
+	    printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
 	}
 
 
 	/**
-	 * admin notice error
+	 * Admin notice error
+	 * @since  1.0.0
+	 * @access public
 	 */
 	public function admin_notice__error() {
 
-		$class = 'notice notice-error';
-		$message = __( '<strong>WordPress Create Post</strong> requires <strong>Contact Form 7</strong> plugin.');
+	    $class = 'notice notice-error';
+	    $message = __( '<strong>Create</strong> requires <strong>Contact Form 7</strong> plugin.');
 
-		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
+	    printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
 	}
 }

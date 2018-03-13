@@ -81,7 +81,6 @@ class WPCP_Public {
 			// Event title
 			'post_type'     => 'event',
 			'post_status'   => 'draft',
-
 			'post_title'    => $posted_data[event_title],
 			'post_status'   => 'draft',
 		);
@@ -274,10 +273,14 @@ class WPCP_Public {
 			}
 
 			$saturday_value = array(
-				'hour'      => $posted_data['event_date_saturday_hour' . $index],
-				'duration'  => $posted_data['event_date_saturday_duration' . $index],
-				'end'       => $posted_data['event_date_saturday_end' . $index],
+				'hour'      			=> $posted_data['event_date_saturday_hour' . $index],
+				'duration'  			=> $posted_data['event_date_saturday_duration' . $index],
+				'end'       			=> $posted_data['event_date_saturday_end' . $index],
 			);
+
+			if ( $posted_data[event_places_number] ) {
+				$sunday_value['event_places_number'] = $posted_data['event_places_number' . $index];
+			}
 
 			array_push( $saturdays_value, $saturday_value );
 		}
@@ -297,14 +300,19 @@ class WPCP_Public {
 			}
 
 			$sunday_value = array(
-				'hour'      => $posted_data['event_date_sunday_hour' . $index],
-				'duration'  => $posted_data['event_date_sunday_duration' . $index],
-				'end'       => $posted_data['event_date_sunday_end' . $index],
+				'hour'      			=> $posted_data['event_date_sunday_hour' . $index],
+				'duration'  			=> $posted_data['event_date_sunday_duration' . $index],
+				'end'       			=> $posted_data['event_date_sunday_end' . $index],
 			);
+
+			if ( $posted_data[event_places_number] ) {
+				$sunday_value['event_places_number'] = $posted_data['event_places_number' . $index];
+			}
 
 			array_push( $sundays_value, $sunday_value );
 		}
 		update_field( 'field_5a6c8cd3e6712', $sundays_value, $post_id );
+
 
 		// event_prices
 		if ( $posted_data[event_prices] ) {
@@ -314,7 +322,7 @@ class WPCP_Public {
 		// event_places_number
 		if ( $posted_data[event_places_number] ) {
 			update_field( 'field_5a6c8d12e6716', $posted_data[event_places_number], $post_id );
-			update_field( 'field_5a70ec191d80f', $posted_data[event_places_number], $post_id );
+			// update_field( 'field_5a70ec191d80f', $posted_data[event_places_number], $post_id );
 		}
 
 		// event_minimum_ages
