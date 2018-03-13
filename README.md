@@ -4,7 +4,7 @@ __Create__ allows post creation from a __Contact Form 7__ form submission.
 
 ![Create](assets/screenshot.png)
 
-### Dependencies
+## Dependencies
 
 - Contact Form 7
 
