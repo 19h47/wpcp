@@ -260,6 +260,32 @@ class WPCP_Public {
 			);
 		}
 
+		// Friday
+		$fridays = explode( ',', $posted_data[friday_repeater] );
+		$fridays = array_splice( $fridays , 1, count( $fridays ) );
+		$fridays_value = [];
+
+		for ( $i = 0; $i <= ( count( $fridays ) / 3 ) - 1; $i++ ) {
+			$index = "-{$i}";
+
+			if ( $index === '-0' ) {
+				$index = '';
+			}
+
+			$friday_value = array(
+				'hour'      			=> $posted_data['event_date_friday_hour' . $index],
+				'duration'  			=> $posted_data['event_date_friday_duration' . $index],
+				'end'       			=> $posted_data['event_date_friday_end' . $index],
+			);
+
+			if ( $posted_data[event_places_number] ) {
+				$friday_value['event_places_number'] = $posted_data['event_places_number' . $index];
+			}
+
+			array_push( $fridays_value, $friday_value );
+		}
+		update_field( 'field_5aaa221e302f8', $saturdays_value, $post_id );
+
 		// Saturday
 		$saturdays = explode( ',', $posted_data[saturday_repeater] );
 		$saturdays = array_splice( $saturdays , 1, count( $saturdays ) );
@@ -321,8 +347,7 @@ class WPCP_Public {
 
 		// event_places_number
 		if ( $posted_data[event_places_number] ) {
-			update_field( 'field_5a6c8d12e6716', $posted_data[event_places_number], $post_id );
-			// update_field( 'field_5a70ec191d80f', $posted_data[event_places_number], $post_id );
+			update_field( 'field_5a70ec191d80f', $posted_data[event_places_number], $post_id );
 		}
 
 		// event_minimum_ages
