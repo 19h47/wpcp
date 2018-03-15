@@ -260,6 +260,7 @@ class WPCP_Public {
 			);
 		}
 
+
 		// Friday
 		$fridays = explode( ',', $posted_data[friday_repeater] );
 		$fridays = array_splice( $fridays , 1, count( $fridays ) );
@@ -284,7 +285,8 @@ class WPCP_Public {
 
 			array_push( $fridays_value, $friday_value );
 		}
-		update_field( 'field_5aaa221e302f8', $saturdays_value, $post_id );
+		update_field( 'field_5aaa221e302f8', $fridays_value, $post_id );
+
 
 		// Saturday
 		$saturdays = explode( ',', $posted_data[saturday_repeater] );
