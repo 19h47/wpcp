@@ -18,7 +18,7 @@
  *
  * @package    wpcp
  * @subpackage wpcp/public
- * @author     Levron Jérémy <levronjeremy@19h47.fr>
+ * @author     Jérémy Levron <jeremylevron@19h47.fr>
  */
 class WPCP_Public {
 
@@ -61,37 +61,37 @@ class WPCP_Public {
 	 * @param 	$result
 	 * @param 	$tag
 	 * @return 	$result
-	 * @author  Jérémy Levron <jeremylevron@19h47.fr>
+	 * @author  	Jérémy Levron <jeremylevron@19h47.fr>
 	 * @see  	https://gist.github.com/thetrickster/35b4d402b0feeae7074d
 	 */
 	function filter_wpcf7_validate_file( $result, $tag ) {
 	  	$name = $tag['name'];
 
-	    $inputs_file = ['event-image-1', 'event-image-2', 'event-image-3'];
+	    	$inputs_file = ['event-image-1', 'event-image-2', 'event-image-3'];
 
-    	if ( ! in_array( $name, $inputs_file, true ) ) {
-    		return $result;
-    	}
+    		if ( ! in_array( $name, $inputs_file, true ) ) {
+    			return $result;
+    		}
 
-    	if ( empty( $_FILES[$tag->name]['tmp_name'] ) ) {
-    		return $result;
-    	}
+    		if ( empty( $_FILES[$tag->name]['tmp_name'] ) ) {
+    			return $result;
+    		}
 
-    	$sizes = getimagesize( $_FILES[$tag->name]['tmp_name'] );
+	    	$sizes = getimagesize( $_FILES[$tag->name]['tmp_name'] );
 
-    	// Width
-    	if ( $sizes[0] < 500 ) {
-    		$result['valid'] = false;
-          	$result['reason'] = array( $name => wpcf7_get_message( 'invalid_file_width' ) );
-    	}
+    		// Width
+	    	if ( $sizes[0] < 500 ) {
+    			$result['valid'] = false;
+          		$result['reason'] = array( $name => wpcf7_get_message( 'invalid_file_width' ) );
+	    	}
 
-    	// Height
+    		// Height
 		if ( $sizes[1] < 350 ) {
 			$result['valid'] = false;
-	      	$result['reason'] = array( $name => wpcf7_get_message( 'invalid_file_height' ) );
+	      		$result['reason'] = array( $name => wpcf7_get_message( 'invalid_file_height' ) );
 		}
 
-	    return $result;
+		return $result;
 	}
 
 
@@ -193,9 +193,7 @@ class WPCP_Public {
 
 		update_post_meta( $post_id, '_wpgm_details', array( 'address' => join( ', ', $address ) ) );
 
-		// wp_die( var_dump( get_post_meta( $post_id ) ) );
-
-
+		
 		/////////////////////
 		// Qui êtes-vous ? //
 		/////////////////////
@@ -325,8 +323,6 @@ class WPCP_Public {
 			);
 		}
 
-		// var_dump( $posted_data );
-
 
 		// Friday
 		$fridays = explode( ',', $posted_data['friday_repeater'] );
@@ -439,6 +435,7 @@ class WPCP_Public {
 			update_field( 'field_5a633a9d94992', $posted_data['event_description'], $post_id );
 		}
 
+		
 		////////////////////
 		// Ajout de média //
 		////////////////////
