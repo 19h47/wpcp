@@ -143,7 +143,10 @@ class WPCP {
             $this->get_version()
         );
 
-        $this->loader->add_action( 'wpcf7_before_send_mail', $plugin_public, 'create_post', 100 );
+        $this->loader->add_filter( 'wpcf7_validate_file', $plugin_public, 'filter_wpcf7_validate_file', 10, 2 );
+        $this->loader->add_filter( 'wpcf7_validate_file*', $plugin_public, 'filter_wpcf7_validate_file', 10, 2 );
+        $this->loader->add_filter( 'wpcf7_messages', $plugin_public, 'cf7_custom_validation_messages' );
+        $this->loader->add_action( 'wpcf7_before_send_mail', $plugin_public, 'create_post' );
     }
 
 

@@ -56,6 +56,71 @@ class WPCP_Public {
 
 
 	/**
+	 * Filter WPCF7 validate file
+	 *
+	 * @param 	$result
+	 * @param 	$tag
+	 * @return 	$result
+	 * @author  Jérémy Levron <jeremylevron@19h47.fr>
+	 * @see  	https://gist.github.com/thetrickster/35b4d402b0feeae7074d
+	 */
+	function filter_wpcf7_validate_file( $result, $tag ) {
+	  	$name = $tag['name'];
+
+	    $inputs_file = ['event-image-1', 'event-image-2', 'event-image-3'];
+
+    	if ( ! in_array( $name, $inputs_file, true ) ) {
+    		return $result;
+    	}
+
+    	if ( empty( $_FILES[$tag->name]['tmp_name'] ) ) {
+    		return $result;
+    	}
+
+    	$sizes = getimagesize( $_FILES[$tag->name]['tmp_name'] );
+
+    	// Width
+    	if ( $sizes[0] < 500 ) {
+    		$result['valid'] = false;
+          	$result['reason'] = array( $name => wpcf7_get_message( 'invalid_file_width' ) );
+    	}
+
+    	// Height
+		if ( $sizes[1] < 350 ) {
+			$result['valid'] = false;
+	      	$result['reason'] = array( $name => wpcf7_get_message( 'invalid_file_height' ) );
+		}
+
+	    return $result;
+	}
+
+
+	/**
+	 * Filter WPCF7 custom validation messages
+	 *
+	 * @param  arr $messages
+	 * @return arr $message
+	 * @author  Jérémy Levron <jeremylevron@19h47.fr>
+	 * @see  	https://gist.github.com/thetrickster/35b4d402b0feeae7074d
+	 */
+	function filter_wpcf7_custom_validation_messages( $messages ) {
+		return array_merge(
+			$messages,
+			array(
+				'invalid_file_width' => array(
+				  'description' 	=> __( 'The user uploaded a too small picture, the width must be at least 500px wide.', 'contact-form-7' ),
+				  'default' 		=> __( 'The image must be 500px wide minimum', 'contact-form-7' )
+				),
+				'invalid_file_height' => array(
+					'description' 	=> __( 'The user uploaded a too small picture, the height must be at least 350px high.', 'contact-form-7' ),
+					'default' 		=> __( 'The image must be 350px high minimum', 'contact-form-7' )
+				)
+			)
+		);
+	}
+
+
+	/**
 	 * create post
 	 *
 	 */
@@ -260,13 +325,15 @@ class WPCP_Public {
 			);
 		}
 
+		// var_dump( $posted_data );
+
 
 		// Friday
 		$fridays = explode( ',', $posted_data['friday_repeater'] );
 		$fridays = array_splice( $fridays , 1, count( $fridays ) );
 		$fridays_value = [];
 
-		if ( ! empty( $posted['event_date_friday_hour'] ) && ! empty( $posted['event_date_friday_duration'] ) && ! empty( $posted['event_date_friday_end'] ) ) {
+		if ( ! empty( $posted_data['event_date_friday_hour'] ) && ! empty( $posted_data['event_date_friday_duration'] ) && ! empty( $posted_data['event_date_friday_end'] ) ) {
 
 			for ( $i = 0; $i <= ( count( $fridays ) / 3 ) - 1; $i++ ) {
 				$index = "-{$i}";
@@ -296,7 +363,7 @@ class WPCP_Public {
 		$saturdays = array_splice( $saturdays , 1, count( $saturdays ) );
 		$saturdays_value = [];
 
-		if ( ! empty( $posted['event_date_saturday_hour'] ) && ! empty( $posted['event_date_saturday_duration'] ) && ! empty( $posted['event_date_saturday_end'] ) ) {
+		if ( ! empty( $posted_data['event_date_saturday_hour'] ) && ! empty( $posted_data['event_date_saturday_duration'] ) && ! empty( $posted_data['event_date_saturday_end'] ) ) {
 
 			for ( $i = 0; $i <= ( count( $saturdays ) / 3 ) - 1; $i++ ) {
 				$index = "-{$i}";
@@ -327,7 +394,7 @@ class WPCP_Public {
 		$sundays = array_splice( $sundays , 1, count( $sundays ) );
 		$sundays_value = [];
 
-		if ( ! empty( $posted['event_daundayrday_hour'] ) && ! empty( $posted['event_date_sunday_duration'] ) && ! empty( $posted['event_dundayurday_end'] ) ) {
+		if ( ! empty( $posted_data['event_date_sunday_hour'] ) && ! empty( $posted_data['event_date_sunday_duration'] ) && ! empty( $posted_data['event_date_sunday_end'] ) ) {
 
 			for ( $i = 0; $i <= ( count( $sundays ) / 3 ) - 1; $i++ ) {
 				$index = "-{$i}";
@@ -380,25 +447,45 @@ class WPCP_Public {
 		require_once( ABSPATH . 'wp-admin/includes/image.php' );
 		require_once( ABSPATH . 'wp-admin/includes/media.php' );
 
-		var_dump( $_FILES );
+		// var_dump( $_FILES );
 
 		// image
-		$event_attachments = ['event-image-1', 'event-image-2', 'event-image-3'];
 		$event_attachments_id = [];
+		$event_attachments_image = array( 'event-image-1', 'event-image-2', 'event-image-3' );
 
-		media_handle_upload('img', 0 );
 
-		foreach ( $event_attachments as $event_attachment ) {
+		foreach ( $event_attachments_image as $event_attachment_image ) {
 
-			$event_attachment_id = media_handle_upload( $event_attachment, 0 );
+			if ( ! isset( $submission->uploaded_files()[$event_attachment_image] ) ) continue;
 
-			var_dump( $event_attachment );
+			$updloaded_files = $submission->uploaded_files()[$event_attachment_image];
 
-			var_dump( $event_attachment_id );
+			$content = file_get_contents( $updloaded_files );
 
-			if ( is_wp_error( $event_attachment_id ) ) continue;
+			$filename = $_FILES[$event_attachment_image]['name'];
 
-			array_push( $event_attachments_id, $event_attachment_id );
+			$upload = wp_upload_bits( $filename, null, $content);
+
+			$wp_check_filetype = wp_check_filetype( basename( $upload['file'] ), null );
+			$wp_upload_dir = wp_upload_dir();
+
+			$attachment = array(
+				'guid'           => $wp_upload_dir['url'] . '/' . sanitize_title( basename( $filename ) ),
+				'post_mime_type' => $wp_check_filetype['type'],
+				'post_title'     => preg_replace( '/\.[^.]+$/', '', sanitize_title( basename( $filename ) ) ),
+				'post_content'   => '',
+				'post_status'    => 'inherit'
+			);
+
+			$attach_id = wp_insert_attachment( $attachment, $upload['file'], $post_id );
+
+			// There was an error uploading the image.
+			if ( $attach_id === 0 ) continue;
+
+			$attach_data = wp_generate_attachment_metadata( $attach_id, $filename );
+			wp_update_attachment_metadata( $attach_id, $attach_data );
+
+			array_push( $event_attachments_id, $attach_id );
 		}
 		update_field( 'field_5a6dd43daa1dc', $event_attachments_id, $post_id );
 
@@ -421,13 +508,10 @@ class WPCP_Public {
 		}
 		update_field( 'field_5a6dcdd1766c1', $partners_attachment_id, $post_id );
 
-
 		// youtube
 		if ( $posted_data['youtube'] ) {
 			update_field( 'field_5a6dcd81a44b5', $posted_data['youtube'], $post_id );
 		}
-
-		// wp_die( $posted_data );
 
 		return $posted_data;
 	}
